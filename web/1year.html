@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia ❤️</title>
+
+    <style>
+        /* SPA: Ocultar secciones por defecto */
+        main section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.7s;
+        }
+        main section.activa {
+            display: block;
+            opacity: 1;
+            animation: fadeInSection 1.2s;
+        }
+        nav {
+            background: #333;
+            padding: 1rem 0.5rem;
+            box-shadow: 0 2px 8px rgba(51,51,51,0.08);
+            animation: fadeInNav 1.2s 0.4s backwards;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        nav ul li {
+            display: block;
+            margin: 0;
+        }
+        nav ul li a {
+            color: #ffe5ec;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            padding: 10px 22px;
+            border-radius: 20px;
+            transition: background 0.3s, color 0.3s;
+            background: #e8a0bf;
+            box-shadow: 0 2px 8px rgba(232,160,191,0.10);
+        }
+        nav ul li a.activo, nav ul li a:hover {
+            background: #b6e2d3;
+            color: #333;
+        }
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5em;
+        }
+        @media (max-width: 700px) {
+            main {
+                padding: 0 0.5em;
+            }
+        }
+        /* Masonry gallery para fotos */
+        .galeria-masonry {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 28px;
+            justify-items: center;
+            align-items: stretch;
+            margin-top: 1.5em;
+        }
+        .foto-galeria {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(232,160,191,0.10);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 260px;
+            max-width: 340px;
+        }
+        .foto-galeria img {
+            width: 100%;
+            height: auto;
+            max-width: 340px;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 18px 18px 0 0;
+            box-shadow: none;
+            margin-bottom: 0;
+        }
+        .foto-galeria:active img,
+        .foto-galeria:focus img,
+        .foto-galeria:hover img {
+            transform: scale(1.06) rotate(-2deg);
+            box-shadow: 0 8px 32px rgba(232,160,191,0.22);
+        }
+        .foto-texto {
+            position: relative;
+            background: rgba(232,160,191,0.85);
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Quicksand',sans-serif;
+            padding: 10px 12px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            min-height: 38px;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            text-align: center;
+            pointer-events: none;
+            margin-top: -8px;
+        }
+        .foto-galeria:active .foto-texto,
+        .foto-galeria:focus .foto-texto,
+        .foto-galeria:hover .foto-texto {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* Animación y texto emergente para galería de fotos */
+        .foto-galeria {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .foto-galeria img {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(232,160,191,0.12);
+            transition: transform 0.4s, box-shadow 0.4s;
+        }
+        .foto-galeria:active img,
+        .foto-galeria:focus img,
+        .foto-galeria:hover img {
+            transform: scale(1.08) rotate(-2deg);
+            box-shadow: 0 8px 32px rgba(232,160,191,0.22);
+        }
+        .foto-texto {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            background: rgba(232,160,191,0.85);
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Quicksand',sans-serif;
+            padding: 10px 12px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            min-height: 38px;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            text-align: center;
+            pointer-events: none;
+        }
+        .foto-galeria:active .foto-texto,
+        .foto-galeria:focus .foto-texto,
+        .foto-galeria:hover .foto-texto {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* Google Fonts para mejorar la tipografía */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Quicksand:wght@400;700&display=swap');
+        body {
+            font-family: 'Quicksand', 'Montserrat', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #f8e8ee 0%, #e0c3fc 100%);
+            color: #4b3557;
+            animation: fadeInBody 1.2s ease;
+        }
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        header {
+            background: linear-gradient(90deg, #c3bef7 60%, #f7cac9 100%);
+            color: #fff;
+            padding: 2rem 1rem 1rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(195,190,247,0.18);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            animation: fadeInHeader 1.2s 0.2s backwards;
+        }
+        @keyframes fadeInHeader {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        nav {
+            background: linear-gradient(90deg, #b6e2d3 0%, #c3bef7 100%);
+            padding: 1rem 0.5rem;
+            box-shadow: 0 2px 8px rgba(195,190,247,0.10);
+            animation: fadeInNav 1.2s 0.4s backwards;
+        }
+        @keyframes fadeInNav {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        nav ul li a {
+            color: #4b3557;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            padding: 10px 22px;
+            border-radius: 20px;
+            transition: background 0.3s, color 0.3s;
+            background: #f7cac9;
+            box-shadow: 0 2px 8px rgba(247,202,201,0.10);
+        }
+        nav ul li a.activo, nav ul li a:hover {
+            background: #c3bef7;
+            color: #fff;
+        }
+        section {
+            padding: 2.5rem 2rem;
+            margin: 0 2rem 2rem 2rem;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 2px 16px rgba(195,190,247,0.10);
+            border-bottom: 1px solid #c3bef7;
+            animation: fadeInSection 1.2s;
+        }
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        section h2 {
+            color: #b6e2d3;
+            font-family: 'Montserrat',sans-serif;
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            letter-spacing: 1px;
+        }
+        section h3 {
+            color: #c3bef7;
+            font-size: 1.2em;
+            margin-top: 1.2em;
+        }
+        section ul, section ol {
+            margin-left: 1.5em;
+        }
+        section ul li, section ol li {
+            margin-bottom: 0.5em;
+            transition: color 0.3s;
+        }
+        section ul li:hover, section ol li:hover {
+            color: #f7cac9;
+        }
+        img {
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(195,190,247,0.12);
+            transition: transform 0.4s, box-shadow 0.4s;
+        }
+        img:hover {
+            transform: scale(1.04) rotate(-2deg);
+            box-shadow: 0 8px 32px rgba(247,202,201,0.22);
+        }
+        hr {
+            border: none;
+            border-top: 2px dashed #c3bef7;
+            margin: 2.5rem 0;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: linear-gradient(90deg, #c3bef7 60%, #f7cac9 100%);
+            color: #4b3557;
+            margin-top: 2rem;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            animation: fadeInFooter 1.2s 0.6s backwards;
+        }
+        @keyframes fadeInFooter {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 style="font-size:2.5em; font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:2px;">Para mi Paocita</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#historia">Nuestra Historia</a></li>
+            <li><a href="#rincon">El Rincón de Paola</a></li>
+            <li><a href="#razones">Razones Por Las Que Te Amo</a></li>
+            <li><a href="#momentos">Paocita y Angelin</a></li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <section id="inicio">
+            <h2>Bienvenida a nuestro espacio ✨</h2>
+            <p>He creado esta pequeña web con el fin de celebrar nuestro primer año juntos como noviecitos, hace un año, el dia 21 de septiembre te pedi ser tu novio
+                con flores en manos, algo un poco nervioso, ese dia estuviste preciosa, como desde el primer dia que te conoci, pero para no hacer mas largo esto,
+            te dejare que mires todo lo que hay aqui, por ti misma</p>
+        </section>
+
+        <hr>
+
+        <section id="historia">
+            <h2>Nuestra Historia: Cómo Empezó Todo</h2>
+            <p>Todo empezo de una manera un poco diferente, recuerdo que te hable y luego era distantes y asi sucesivamente
+                hasta que un dia, empezamos a hablar, me diste tu numero de telefono, te envie mensaje, te pregunte si vendias tamales JAJAJAJA, seguimos hablando
+                me enseñaste fotos tuyas, 100 fotos o mas me enviaste, en todas salias preciosa, me gustaste como salias en cada una de ellas, me caiste demasiado bien, 
+                tiempo despues quedamos en vernos, me sali de la escuela para ir contigo, te fui a ver, te veias bella, guapa, hermosa, preciosa, fashion, inigualable,
+                me enamore de ti, poco a poco se fue dando todo, la verdad, estaba y estoy enamorado de ti, como fue pasando el tiempo me contabas mas sobre de ti, me gustaba eso, 
+                hasta que un dia, me decidi a salir contigo, te lleve flores, tu llegaste sumamente preciosa, me encantaste, realmente no sabia si me ibas aceptar ser tu novio, estaba con pena,
+                un poco nervioso, no sabia como decirtelo, hasta que un momento te lo dije, te pedi si podia ser tu novio a lo cual me dijiste que si, nos empezamos a besar de una manera muy linda pero a la vez un poco intensa. 
+                Me encanto besarte, aun lo recuerdo.
+        </section>
+        
+        <hr>
+
+        <section id="rincon">
+            <h2>El Rincón de Paocita</h2>
+            <p>Esta sección está dedicada 100% a ti y a todas las cosas maravillosas que te hacen única.</p>
+            <h3>Tus Pasiones</h3>
+            <p>Eres realmente una niña muy comprometida con temas relacionados a la escolta, me encanta como lo haces, al igual 
+                que desde que te conozco te gusta sacar buenas califaciones, yo se que tu eres inteligente aunque a veces pienses lo contrario.
+                Te gusta mucho ser fashion, siempre te vistes super bien, me encanta como te ves cuando te arreglas, me fascina tu forma de ser, tu personalidad, tu manera de ser tan linda conmigo.
+                No desviando el tema, de igual forma te gusta maquillarte, podrias tardar varias horas haciendolo solo con el fin de llegar bien maquillada, bien linda como de costumbre. Amas el maquillaje, la ropa, ser fashion, ser linda, me encanta tener una chica
+                tan femenina como tu a mi lado.
+            </p>
+            <h3>Cosas que amas</h3>
+            <ul>
+                <li>Maquillarte por horas</li>
+                <li>La musica de Rauw</li>
+                <li>El pan, te encanta, adicta a la harina JAJAJA</li>
+                <li>Verte linda siempre</li>
+                <li>Tu gato, Garfield</li>
+                <li>Ser consentida por mi</li>
+                <li>Las lechitas Santa Clara</li>
+                <li>El Snoopy</li>
+                <li>Hello Kitty</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section id="razones">
+            <h2>Razones Por Las Que Te Amo</h2>
+            <ol>
+                <li>Por la forma en que eres.</li>
+                <li>Por esos ojos hermosos que me encantan.</li>
+                <li>Por ser muy femenina y preciosa.</li>
+                <li>Por ser tan linda siempre.</li>
+                <li>Por ese hermoso corazon y sentimientos que tenes.</li>
+                <li>Por que siempre estas para mi cuando lo necesito.</li>
+                <li>Por alimentarme.</li>
+                <li>Por amarme de la manera que siempre he querido.</li>
+                <li>Por ser el amor de mi vida.</li>
+                <li>Por ser mi todo.</li>
+                <li>Por ser la mujer que tanto habia querido.</li>
+                <li>Por ser mi novia.</li>
+                <li>Por ser mi mejor amiga.</li>
+                <li>Por ser mi confidente.</li>
+                <li>Por ser mi compañera.</li>
+                </ol>
+                <p>Por todo, te amo por todo, eres la unica mujer que amo con todo mi amor, te amo como no tenes idea, realmente estoy muy feliz de ser tu novio
+                    paocita de mi vida, en un futuro sere tu esposo, seras feliz a mi lado, tendras todo, tendremos una familia, eres el amor de mi vida
+                y te amo con todo mi corazon, siempre estare orgulloso de mi hermosa novia e inteligente novia que tengo.</p>
+        </section>
+
+        <hr>
+
+        <section id="momentos">
+            <h2>Paocita y Angelin</h2>
+            <p>Fotos de nosotros dos,muak.</p>
+            <div class="galeria-masonry">
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 22.26.08_40185c5a.jpg" alt="Recuerdo 0">
+                    <div class="foto-texto">Esta foto nuestra primera foto juntos, ese dia te veias preciosa y muy tierna a la vez.</div>
+                </div>
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 21.31.20_546b95cb.jpg" alt="Recuerdo 1">
+                    <div class="foto-texto">Esta foto fue el 14 de febrero, te veias bella, preciosa como siempre, me encanto salir contigo ese dia.</div>
+                </div>
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 21.31.22_79f323e1.jpg" alt="Recuerdo 2">
+                    <div class="foto-texto">Fotito juntos en el tec.</div>
+                </div>
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 21.31.26_93cae8ca.jpg" alt="Recuerdo 3">
+                    <div class="foto-texto">Fotos en el gym cuando entrenabamos juntitos, te amo amor mio.</div>
+                </div>
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 21.31.39_4b2a28af.jpg" alt="Recuerdo 4">
+                    <div class="foto-texto">Ese dia andabamos loqueando, como de costumbre, andar paseando.</div>
+                </div>
+                <div class="foto-galeria">
+                    <img src="Fotos/Imagen de WhatsApp 2025-09-20 a las 21.31.39_94627a50.jpg" alt="Recuerdo 5">
+                    <div class="foto-texto">Aqui pase por ti, me gusta como saliste en esa foto, te ves hermosa.
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <footer>
+    <script>
+    // SPA: mostrar solo la sección seleccionada
+    const menuLinks = document.querySelectorAll('nav ul li a');
+    const secciones = document.querySelectorAll('main section');
+    function mostrarSeccion(id) {
+        secciones.forEach(sec => {
+            sec.classList.remove('activa');
+        });
+        const activa = document.getElementById(id);
+        if (activa) activa.classList.add('activa');
+        menuLinks.forEach(link => {
+            link.classList.remove('activo');
+            if (link.getAttribute('href') === '#' + id) link.classList.add('activo');
+        });
+    }
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.getAttribute('href').replace('#','');
+            mostrarSeccion(id);
+        });
+    });
+    // Mostrar la primera sección al cargar
+    mostrarSeccion('inicio');
+    </script>
+    <footer>
+        <p>Hecho con todo mi amor para ti, De tu novio Angel para ti Paocita.</p>
+    </footer>
+</html>
